@@ -9,7 +9,6 @@ import useCountries from "@/app/hooks/useCountries";
 import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 
 import Button from "../Button";
-import ClientOnly from "../ClientOnly";
 import Avatar from "../Avatar";
 import HeartButton from "../HeartButton";
 

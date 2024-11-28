@@ -12,13 +12,13 @@ import Container from "@/app/components/Container";
 import ListingCard from "@/app/components/listings/ListingCard";
 
 interface PropertiesClientProps {
-  listings: SafeListing[],
-  currentUser?: SafeUser | null,
+  listings: SafeListing[];
+  currentUser?: SafeUser | null;
 }
 
 const PropertiesClient: React.FC<PropertiesClientProps> = ({
   listings,
-  currentUser
+  currentUser,
 }) => {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState('');
@@ -26,27 +26,24 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
   const onDelete = useCallback((id: string) => {
     setDeletingId(id);
 
-    axios.delete(`/api/listings/${id}`)
-    .then(() => {
-      toast.success('Listing deleted');
-      router.refresh();
-    })
-    .catch((error) => {
-      toast.error(error?.response?.data?.error)
-    })
-    .finally(() => {
-      setDeletingId('');
-    })
+    axios
+      .delete(`/api/listings/${id}`)
+      .then(() => {
+        toast.success('Listing deleted');
+        router.refresh();
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.error);
+      })
+      .finally(() => {
+        setDeletingId('');
+      });
   }, [router]);
 
-
-  return ( 
+  return (
     <Container>
-      <Heading
-        title="Properties"
-        subtitle="List of your properties"
-      />
-      <div 
+      <Heading title="Properties" subtitle="List of your properties" />
+      <div
         className="
           mt-10
           grid 
@@ -59,7 +56,7 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
           gap-8
         "
       >
-        {listings.map((listing: any) => (
+        {listings.map((listing) => (
           <ListingCard
             key={listing.id}
             data={listing}
@@ -72,7 +69,7 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
         ))}
       </div>
     </Container>
-   );
-}
- 
+  );
+};
+
 export default PropertiesClient;

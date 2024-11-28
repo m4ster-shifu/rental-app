@@ -6,17 +6,15 @@ interface IParams {
   authorId?: string;
 }
 
-export default async function getReservations(
-  params: IParams
-) {
+export default async function getReservations(params: IParams) {
   try {
     const { listingId, userId, authorId } = params;
 
-    const query: any = {};
-        
+    const query: Record<string, unknown> = {};
+
     if (listingId) {
       query.listingId = listingId;
-    };
+    }
 
     if (userId) {
       query.userId = userId;
@@ -30,15 +28,14 @@ export default async function getReservations(
       where: query,
       include: {
         listing: true,
-        user: true
+        user: true,
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
-    const safeReservations = reservations.map(
-      (reservation) => ({
+    const safeReservations = reservations.map((reservation) => ({
       ...reservation,
       createdAt: reservation.createdAt.toISOString(),
       startDate: reservation.startDate.toISOString(),
@@ -52,11 +49,16 @@ export default async function getReservations(
         createdAt: reservation.user.createdAt.toISOString(),
         updatedAt: reservation.user.updatedAt.toISOString(),
         emailVerified: reservation.user.emailVerified?.toISOString() || null,
-      }
+      },
     }));
 
     return safeReservations;
-  } catch (error: any) {
-    throw new Error(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching reservations:", error.message);
+    } else {
+      console.error("An unknown error occurred while fetching reservations.");
+    }
+    return [];
   }
 }

@@ -69,7 +69,7 @@ const RentModal = () => {
 
 
 
-      const setCustomValue = (id: string, value: any) => {
+      const setCustomValue = (id: string, value: unknown) => {
         setValue(id, value, {
           shouldDirty: true,
           shouldTouch: true,
@@ -262,7 +262,7 @@ const RentModal = () => {
     <Modal 
       isOpen={rentModal.isOpen}
       title="Rent your stuff"
-      actionLabel="Submit"
+      actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
       onClose={rentModal.onClose}

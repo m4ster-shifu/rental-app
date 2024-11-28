@@ -1,5 +1,4 @@
 import prisma from "@/app/libs/prismadb";
-
 import getCurrentUser from "./getCurrentUser";
 
 export default async function getFavoriteListings() {
@@ -13,18 +12,21 @@ export default async function getFavoriteListings() {
     const favorites = await prisma.listing.findMany({
       where: {
         id: {
-          in: [...(currentUser.favoriteIds || [])]
-        }
-      }
+          in: [...(currentUser.favoriteIds || [])],
+        },
+      },
     });
 
     const safeFavorites = favorites.map((favorite) => ({
       ...favorite,
-      createdAt: favorite.createdAt.toString(),
+      createdAt: favorite.createdAt.toISOString(), // Using `toISOString` for consistency
     }));
 
     return safeFavorites;
-  } catch (error: any) {
-    throw new Error(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message); // Explicitly handle `Error` instances
+    }
+    throw new Error("An unexpected error occurred."); // Fallback for non-Error types
   }
 }

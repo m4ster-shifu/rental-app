@@ -20,7 +20,7 @@ export default async function getListings(params: IListingsParams) {
       category,
     } = params;
 
-    let query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (userId) {
       query.userId = userId;
@@ -30,10 +30,9 @@ export default async function getListings(params: IListingsParams) {
       query.category = category;
     }
 
-
     if (itemCount) {
       query.itemCount = {
-        gte: +itemCount,
+        gte: itemCount,
       };
     }
 
@@ -73,7 +72,12 @@ export default async function getListings(params: IListingsParams) {
     }));
 
     return safeListings;
-  } catch (error: any) {
-    throw new Error(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching listings:", error.message);
+    } else {
+      console.error("An unknown error occurred while fetching listings.");
+    }
+    return [];
   }
 }

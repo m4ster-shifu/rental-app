@@ -9,7 +9,7 @@ import useLoginModal from "./useLoginModal";
 
 interface IUseFavorite {
   listingId: string;
-  currentUser?: SafeUser | null
+  currentUser?: SafeUser | null;
 }
 
 const useFavorite = ({ listingId, currentUser }: IUseFavorite) => {
@@ -19,7 +19,6 @@ const useFavorite = ({ listingId, currentUser }: IUseFavorite) => {
 
   const hasFavorited = useMemo(() => {
     const list = currentUser?.favoriteIds || [];
-
     return list.includes(listingId);
   }, [currentUser, listingId]);
 
@@ -42,11 +41,10 @@ const useFavorite = ({ listingId, currentUser }: IUseFavorite) => {
       await request();
       router.refresh();
       toast.success('Success');
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong.');
     }
-  }, 
-  [
+  }, [
     currentUser, 
     hasFavorited, 
     listingId, 
@@ -57,7 +55,7 @@ const useFavorite = ({ listingId, currentUser }: IUseFavorite) => {
   return {
     hasFavorited,
     toggleFavorite,
-  }
-}
+  };
+};
 
 export default useFavorite;

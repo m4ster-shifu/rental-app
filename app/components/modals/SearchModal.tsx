@@ -1,7 +1,7 @@
 "use client";
 
 import qs from "query-string";
-import dynamic from "next/dynamic";
+import dynamic from "next/dynamic"; // Import dynamic here
 import { useCallback, useMemo, useState } from "react";
 import { Range } from "react-date-range";
 import { formatISO } from "date-fns";
@@ -29,7 +29,7 @@ const SearchModal = () => {
   const [step, setStep] = useState(STEPS.LOCATION);
 
   const [location, setLocation] = useState<CountrySelectValue>();
-  const [itemCount, setitemCount] = useState(1);
+  const [itemCount, setItemCount] = useState(1);
   const [dateRange, setDateRange] = useState<Range>({
     startDate: new Date(),
     endDate: new Date(),
@@ -57,13 +57,13 @@ const SearchModal = () => {
       return onNext();
     }
 
-    let currentQuery = {};
+    let currentQuery: qs.StringifiableRecord = {};
 
     if (params) {
-      currentQuery = qs.parse(params.toString());
+      currentQuery = qs.parse(params.toString()) as qs.StringifiableRecord;
     }
 
-    const updatedQuery: any = {
+    const updatedQuery: qs.StringifiableRecord = {
       ...currentQuery,
       locationValue: location?.value,
       itemCount,
@@ -150,7 +150,7 @@ const SearchModal = () => {
       <div className="flex flex-col gap-8">
         <Heading title="More information" subtitle="Find your perfect place!" />
         <Counter
-          onChange={(value) => setitemCount(value)}
+          onChange={(value) => setItemCount(value)}
           value={itemCount}
           title="Units"
           subtitle="How many units do you want?"

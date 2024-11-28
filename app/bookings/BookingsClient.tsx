@@ -21,34 +21,36 @@ const BookingsClient: React.FC<BookingsClientProps> = ({
   currentUser,
 }) => {
   const router = useRouter();
-  const [deletingId, setDeletingId] = useState("");
+  const [deletingId, setDeletingId] = useState<string>("");
 
   const onCancel = useCallback(
-    (id: string) => {
+    async (id: string) => {
       setDeletingId(id);
 
-      axios
-        .delete(`/api/reservations/${id}`)
-        .then(() => {
-          toast.success("Reservation cancelled");
-          router.refresh();
-        })
-        .catch((error) => {
-          toast.error(error?.response?.data?.error);
-        })
-        .finally(() => {
-          setDeletingId("");
-        });
+      try {
+        await axios.delete(`/api/reservations/${id}`);
+        toast.success("Reservation cancelled");
+        router.refresh();
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          // We know this is an Axios error, so we can safely access .response
+          const errorMessage =
+            error.response?.data?.error || "Something went wrong";
+          toast.error(errorMessage);
+        } else {
+          // This handles non-axios errors
+          toast.error("An unexpected error occurred");
+        }
+      } finally {
+        setDeletingId("");
+      }
     },
     [router]
   );
 
   return (
     <Container>
-      <Heading
-        title="Bookings"
-        subtitle="All of your bookings"
-      />
+      <Heading title="Bookings" subtitle="All of your bookings" />
       <div
         className="
           mt-10
@@ -62,7 +64,7 @@ const BookingsClient: React.FC<BookingsClientProps> = ({
           gap-8
         "
       >
-        {reservations.map((reservation: any) => (
+        {reservations.map((reservation: SafeReservation) => (
           <ListingCard
             key={reservation.id}
             data={reservation.listing}

@@ -6,7 +6,7 @@ import { useCallback } from "react";
 import { IconType } from "react-icons";
 
 interface CategoryBoxProps {
-  icon: IconType,
+  icon: IconType;
   label: string;
   selected?: boolean;
 }
@@ -20,16 +20,16 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
   const params = useSearchParams();
 
   const handleClick = useCallback(() => {
-    let currentQuery = {};
-    
+    let currentQuery: Record<string, string | undefined> = {};
+
     if (params) {
-      currentQuery = qs.parse(params.toString())
+      currentQuery = qs.parse(params.toString()) as Record<string, string | undefined>;
     }
 
-    const updatedQuery: any = {
+    const updatedQuery: Record<string, string | undefined> = {
       ...currentQuery,
       category: label
-    }
+    };
 
     if (params?.get('category') === label) {
       delete updatedQuery.category;
@@ -43,7 +43,7 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
     router.push(url);
   }, [label, router, params]);
 
-  return ( 
+  return (
     <div
       onClick={handleClick}
       className={`
@@ -66,7 +66,7 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
         {label}
       </div>
     </div>
-   );
+  );
 }
- 
+
 export default CategoryBox;

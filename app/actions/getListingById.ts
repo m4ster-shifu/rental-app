@@ -4,19 +4,21 @@ interface IParams {
   listingId?: string;
 }
 
-export default async function getListingById(
-  params: IParams
-) {
+export default async function getListingById(params: IParams) {
   try {
     const { listingId } = params;
+
+    if (!listingId) {
+      throw new Error("Listing ID is required");
+    }
 
     const listing = await prisma.listing.findUnique({
       where: {
         id: listingId,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!listing) {
@@ -25,16 +27,20 @@ export default async function getListingById(
 
     return {
       ...listing,
-      createdAt: listing.createdAt.toString(),
+      createdAt: listing.createdAt.toISOString(),
       user: {
         ...listing.user,
-        createdAt: listing.user.createdAt.toString(),
-        updatedAt: listing.user.updatedAt.toString(),
-        emailVerified: 
-          listing.user.emailVerified?.toString() || null,
-      }
+        createdAt: listing.user.createdAt.toISOString(),
+        updatedAt: listing.user.updatedAt.toISOString(),
+        emailVerified: listing.user.emailVerified?.toISOString() || null,
+      },
     };
-  } catch (error: any) {
-    throw new Error(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching listing by ID:", error.message);
+    } else {
+      console.error("An unknown error occurred while fetching listing by ID.");
+    }
+    return null;
   }
 }

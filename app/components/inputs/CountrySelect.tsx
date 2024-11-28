@@ -1,20 +1,27 @@
 'use client';
 
-import Select from 'react-select'
-
+import Select from 'react-select';
 import useCountries from '@/app/hooks/useCountries';
 
 export type CountrySelectValue = {
   flag: string;
   label: string;
-  latlng: number[],
+  latlng: number[];
   region: string;
-  value: string
+  value: string;
 }
 
 interface CountrySelectProps {
   value?: CountrySelectValue;
   onChange: (value: CountrySelectValue) => void;
+}
+
+// Define a type for the options in the select dropdown
+interface CountryOption {
+  flag: string;
+  label: string;
+  region: string;
+  value: string;
 }
 
 const CountrySelect: React.FC<CountrySelectProps> = ({
@@ -23,7 +30,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({
 }) => {
   const { getAll } = useCountries();
 
-  return ( 
+  return (
     <div>
       <Select
         placeholder="Anywhere"
@@ -31,9 +38,8 @@ const CountrySelect: React.FC<CountrySelectProps> = ({
         options={getAll()}
         value={value}
         onChange={(value) => onChange(value as CountrySelectValue)}
-        formatOptionLabel={(option: any) => (
-          <div className="
-          flex flex-row items-center gap-3">
+        formatOptionLabel={(option: CountryOption) => (
+          <div className="flex flex-row items-center gap-3">
             <div>{option.flag}</div>
             <div>
               {option.label},
@@ -59,7 +65,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({
         })}
       />
     </div>
-   );
+  );
 }
- 
+
 export default CountrySelect;

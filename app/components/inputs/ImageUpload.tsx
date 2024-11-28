@@ -6,7 +6,7 @@ import { useCallback } from "react";
 import { TbPhotoPlus } from 'react-icons/tb'
 
 declare global {
-  var cloudinary: any
+  let cloudinary: unknown; // Using 'unknown' for cloudinary type
 }
 
 const uploadPreset = "hz7k1sbe";
@@ -16,12 +16,20 @@ interface ImageUploadProps {
   value: string;
 }
 
+interface CloudinaryUploadResult {
+  info: {
+    secure_url: string;
+  };
+}
+
 const ImageUpload: React.FC<ImageUploadProps> = ({
   onChange,
   value
 }) => {
-  const handleUpload = useCallback((result: any) => {
-    onChange(result.info.secure_url);
+  const handleUpload = useCallback((result: unknown) => {
+    // Use type assertion to assert that result is of type CloudinaryUploadResult
+    const uploadResult = result as CloudinaryUploadResult; 
+    onChange(uploadResult.info.secure_url);
   }, [onChange]);
 
   return (
@@ -36,32 +44,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         return (
           <div
             onClick={() => open?.()}
-            className="
-              relative
-              cursor-pointer
-              hover:opacity-70
-              transition
-              border-dashed 
-              border-2 
-              p-20 
-              border-neutral-300
-              flex
-              flex-col
-              justify-center
-              items-center
-              gap-4
-              text-neutral-600
-            "
+            className="relative cursor-pointer hover:opacity-70 transition border-dashed border-2 p-20 border-neutral-300 flex flex-col justify-center items-center gap-4 text-neutral-600"
           >
-            <TbPhotoPlus
-              size={50}
-            />
+            <TbPhotoPlus size={50} />
             <div className="font-semibold text-lg">
               Click to upload
             </div>
             {value && (
-              <div className="
-              absolute inset-0 w-full h-full">
+              <div className="absolute inset-0 w-full h-full">
                 <Image
                   fill 
                   style={{ objectFit: 'cover' }} 
@@ -71,8 +61,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               </div>
             )}
           </div>
-        ) 
-    }}
+        );
+      }}
     </CldUploadWidget>
   );
 }
